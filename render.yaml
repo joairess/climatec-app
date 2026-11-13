@@ -1,10 +1,11 @@
 # Climatec — web service gratuito.
-# O disco do plano free é efêmero: o SQLite some quando o serviço dorme ou faz deploy.
-# Para dados persistentes, crie um Postgres e defina DATABASE_URL no serviço.
+# O Blueprint liga o Postgres climatec-db (Render Postgres free, 30 dias)
+# ao serviço automaticamente via DATABASE_URL.
 services:
   - type: web
     name: climatec
     runtime: python
+    region: oregon
     plan: free
     buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
     startCommand: python manage.py migrate --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
@@ -20,3 +21,15 @@ services:
         value: "1"
       - key: ALLOWED_HOSTS
         value: ".onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: climatec-db
+          property: connectionString
+
+databases:
+  - name: climatec-db
+    databaseName: climatec_db
+    user: climatec_db_user
+    postgresMajorVersion: "16"
+    region: oregon
+    plan: free
