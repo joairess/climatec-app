@@ -1,0 +1,39 @@
+{% extends "base_painel.html" %}
+
+{% block title %}Clientes | Climatec{% endblock %}
+
+{% block content %}
+<header class="painel-titulo">
+  <h1>Clientes</h1>
+  <p>A mesma pessoa é reunida pelo telefone.</p>
+</header>
+<form class="busca" method="get" role="search">
+  <label class="field-label" for="q">Buscar</label>
+  <div class="busca-linha">
+    <input class="field-control" id="q" type="search" name="q" value="{{ q }}" placeholder="Nome ou telefone">
+    <button class="btn btn-brand" type="submit">Buscar</button>
+  </div>
+</form>
+{% if pagina.object_list %}
+<div class="lista">
+  {% for cliente in pagina %}
+  <a class="pedido-card" href="{% url 'cliente_detalhe' cliente.pk %}">
+    <p class="pedido-nome">{{ cliente.nome }}</p>
+    <p>{{ cliente.telefone_formatado }}</p>
+    <p>{{ cliente.total }} atendimento{{ cliente.total|pluralize:"s" }}{% if cliente.ultimo %} · último {{ cliente.ultimo|date:"d/m/Y" }}{% endif %}</p>
+  </a>
+  {% endfor %}
+</div>
+<nav class="dia-nav" aria-label="Páginas">
+  {% if pagina.has_previous %}
+  <a class="btn btn-outline-brand" href="?q={{ q|urlencode }}&amp;pagina={{ pagina.previous_page_number }}">Anterior</a>
+  {% endif %}
+  <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+  {% if pagina.has_next %}
+  <a class="btn btn-outline-brand" href="?q={{ q|urlencode }}&amp;pagina={{ pagina.next_page_number }}">Próxima</a>
+  {% endif %}
+</nav>
+{% else %}
+<p class="vazio">Nenhum cliente encontrado.</p>
+{% endif %}
+{% endblock %}

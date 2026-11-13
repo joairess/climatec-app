@@ -1,0 +1,41 @@
+{% extends "base_painel.html" %}
+
+{% block title %}Semana de {{ inicio|date:"d/m" }} | Climatec{% endblock %}
+
+{% block content %}
+<header class="painel-titulo">
+  <h1>Semana de {{ inicio|date:"d/m" }} a {{ fim|date:"d/m/Y" }}</h1>
+</header>
+<nav class="dia-nav" aria-label="Trocar de semana">
+  <a class="btn btn-outline-brand" href="{{ anterior }}" rel="prev">Anterior</a>
+  <a class="btn btn-outline-brand" href="{{ link_hoje }}">Hoje</a>
+  <a class="btn btn-outline-brand" href="{{ proximo }}" rel="next">Próxima</a>
+  <a class="btn btn-brand" href="{% url 'painel' %}?data={{ dia|date:'Y-m-d' }}">Dia</a>
+</nav>
+{% include "painel/filtros.html" %}
+{% for grupo in grupos %}
+<section class="dia-bloco">
+  <h2>
+    <a href="{% url 'painel' %}?data={{ grupo.data|date:'Y-m-d' }}{% if status %}&amp;status={{ status }}{% endif %}">
+      {{ grupo.data|date:"l, d/m" }}{% if grupo.data == hoje %} · hoje{% endif %}
+    </a>
+  </h2>
+  {% if grupo.itens %}
+    {% for item in grupo.itens %}
+    <a class="pedido-card borda-{{ item.status }}" href="{% url 'pedido_detalhe' item.pk %}">
+      <div class="pedido-topo">
+        <time datetime="{{ item.horario|time:'H:i' }}">{{ item.horario|time:"H:i" }}–{{ item.fim|time:"H:i" }}</time>
+        <span class="badge-status status-{{ item.status }}">{{ item.get_status_display }}</span>
+      </div>
+      <p class="pedido-nome">{{ item.cliente.nome }}</p>
+      <p>{{ item.get_servico_display }} · {{ item.endereco.bairro }}</p>
+    </a>
+    {% endfor %}
+  {% elif not grupo.aberto %}
+    <p class="vazio">Fechado</p>
+  {% else %}
+    <p class="vazio">Sem pedidos</p>
+  {% endif %}
+</section>
+{% endfor %}
+{% endblock %}

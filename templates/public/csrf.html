@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Sessão expirada | Climatec{% endblock %}
+
+{% block content %}
+<section class="cartao">
+  <h1>Não foi possível enviar</h1>
+  <p>A sessão do formulário expirou. Volte e tente de novo.</p>
+  <p><a class="btn btn-brand" href="{% url 'home' %}">Voltar ao agendamento</a></p>
+</section>
+{% endblock %}

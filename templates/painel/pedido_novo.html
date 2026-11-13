@@ -1,0 +1,36 @@
+{% extends "base_painel.html" %}
+
+{% block title %}Registrar atendimento | Climatec{% endblock %}
+
+{% block content %}
+<section class="cartao">
+  <h1>Registrar atendimento</h1>
+  <p>Para pedidos que chegaram por telefone ou WhatsApp. O horário precisa estar livre na grade.</p>
+  <form method="post" data-horarios="{% url 'horarios' %}" data-horarios-extra="&amp;painel=1">
+    {% csrf_token %}
+    {% if form.errors %}
+    <div class="banner danger" role="alert">
+      <p><strong>Não foi possível registrar.</strong></p>
+      {% for erro in form.non_field_errors %}<p>{{ erro }}</p>{% endfor %}
+    </div>
+    {% endif %}
+    {% include "includes/campo.html" with field=form.origem %}
+    {% include "includes/campo.html" with field=form.status %}
+    {% include "includes/campo.html" with field=form.servico %}
+    {% include "includes/campo.html" with field=form.tipo_cliente %}
+    {% include "includes/campo.html" with field=form.nome %}
+    {% include "includes/campo.html" with field=form.telefone %}
+    {% include "includes/campo.html" with field=form.logradouro %}
+    {% include "includes/campo.html" with field=form.bairro %}
+    {% include "includes/campo.html" with field=form.cidade %}
+    {% include "includes/campo.html" with field=form.quantidade %}
+    {% include "includes/campo.html" with field=form.observacoes %}
+    {% include "includes/campo.html" with field=form.data %}
+    {% include "includes/horarios.html" with field=form.horario %}
+    <div class="botoes">
+      <button class="btn btn-brand" type="submit" name="acao" value="agendar">Salvar na agenda</button>
+      <button class="btn btn-outline-brand" type="submit" name="acao" value="horarios" formnovalidate>Ver horários livres</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

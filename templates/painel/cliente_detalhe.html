@@ -1,0 +1,29 @@
+{% extends "base_painel.html" %}
+
+{% block title %}{{ cliente.nome }} | Climatec{% endblock %}
+
+{% block content %}
+<p><a href="{% url 'clientes' %}">Voltar aos clientes</a></p>
+<header class="painel-titulo">
+  <h1>{{ cliente.nome }}</h1>
+  <p><a href="tel:+55{{ cliente.telefone }}">{{ cliente.telefone_formatado }}</a></p>
+</header>
+{% for endereco in enderecos %}
+<section class="cartao">
+  <h2>{{ endereco.logradouro }}</h2>
+  <p>{{ endereco.bairro }} · {{ endereco.cidade }}/{{ endereco.uf }} · {{ endereco.get_tipo_display }}</p>
+  {% for item in endereco.atendimentos.all %}
+  <a class="pedido-card borda-{{ item.status }}" href="{% url 'pedido_detalhe' item.pk %}">
+    <div class="pedido-topo">
+      <time datetime="{{ item.data|date:'Y-m-d' }}">{{ item.data|date:"d/m/Y" }} · {{ item.horario|time:"H:i" }}–{{ item.fim|time:"H:i" }}</time>
+      <span class="badge-status status-{{ item.status }}">{{ item.get_status_display }}</span>
+    </div>
+    <p>{{ item.get_servico_display }} · {{ item.quantidade_aparelhos }} aparelho{{ item.quantidade_aparelhos|pluralize }}</p>
+    {% if item.observacoes %}<p>{{ item.observacoes }}</p>{% endif %}
+  </a>
+  {% endfor %}
+</section>
+{% empty %}
+<p class="vazio">Nenhum endereço registrado.</p>
+{% endfor %}
+{% endblock %}

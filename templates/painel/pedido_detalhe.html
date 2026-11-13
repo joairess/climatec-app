@@ -1,0 +1,70 @@
+{% extends "base_painel.html" %}
+
+{% block title %}{{ atendimento.codigo }} | Climatec{% endblock %}
+
+{% block content %}
+<p><a href="{% url 'painel' %}?data={{ atendimento.data|date:'Y-m-d' }}">Voltar para o dia</a></p>
+<article class="cartao">
+  <p class="kicker">{{ atendimento.codigo }} · {{ atendimento.get_origem_display }}</p>
+  <h1>{{ atendimento.cliente.nome }}</h1>
+  <p class="status-linha">
+    <span class="badge-status status-{{ atendimento.status }}">{{ atendimento.get_status_display }}</span>
+  </p>
+  <p class="quando">{{ atendimento.data|date:"l, d/m/Y" }} · {{ atendimento.horario|time:"H:i" }}–{{ atendimento.fim|time:"H:i" }}</p>
+  <dl class="ficha">
+    <div><dt>Serviço</dt><dd>{{ atendimento.get_servico_display }}</dd></div>
+    <div><dt>Aparelhos</dt><dd>{{ atendimento.quantidade_aparelhos }}</dd></div>
+    <div><dt>Telefone</dt><dd><a href="tel:+55{{ atendimento.cliente.telefone }}">{{ atendimento.cliente.telefone_formatado }}</a></dd></div>
+    <div><dt>Endereço</dt><dd>{{ atendimento.endereco.logradouro }} — {{ atendimento.endereco.bairro }}, {{ atendimento.endereco.cidade }}/{{ atendimento.endereco.uf }}</dd></div>
+    <div><dt>Tipo</dt><dd>{{ atendimento.endereco.get_tipo_display }}</dd></div>
+    <div><dt>Observações</dt><dd>{% if atendimento.observacoes %}{{ atendimento.observacoes|linebreaksbr }}{% else %}Sem observações.{% endif %}</dd></div>
+    {% if atendimento.motivo_cancelamento %}
+    <div><dt>Motivo do cancelamento</dt><dd>{{ atendimento.motivo_cancelamento }}</dd></div>
+    {% endif %}
+    <div><dt>Registrado em</dt><dd>{{ atendimento.criado_em|date:"d/m/Y H:i" }}</dd></div>
+  </dl>
+  <div class="botoes">
+    <a class="btn btn-whatsapp" href="{{ atendimento.whatsapp_cliente_url }}">Chamar cliente no WhatsApp</a>
+    <a class="btn btn-outline-brand" href="{% url 'cliente_detalhe' atendimento.cliente_id %}">Ver histórico do cliente</a>
+  </div>
+</article>
+
+{% if atendimento.pode_alterar %}
+<section class="cartao" aria-labelledby="titulo-acoes">
+  <h2 id="titulo-acoes">Atualizar</h2>
+  <form method="post" class="acoes">
+    {% csrf_token %}
+    <button class="btn btn-brand" type="submit" name="acao" value="confirmar">Confirmar</button>
+    <button class="btn btn-outline-brand" type="submit" name="acao" value="a_caminho">Marcar a caminho</button>
+    <button class="btn btn-ok" type="submit" name="acao" value="concluir">Marcar concluído</button>
+  </form>
+  <details class="detalhe-acao">
+    <summary>Remarcar</summary>
+    <form method="post" data-horarios="{% url 'horarios' %}" data-horarios-extra="&amp;painel=1&amp;excluir={{ atendimento.pk }}">
+      {% csrf_token %}
+      {% if remarcar_form.non_field_errors %}
+      <div class="banner danger" role="alert">
+        {% for erro in remarcar_form.non_field_errors %}<p>{{ erro }}</p>{% endfor %}
+      </div>
+      {% endif %}
+      {% include "includes/campo.html" with field=remarcar_form.data %}
+      {% include "includes/horarios.html" with field=remarcar_form.horario %}
+      <button class="btn btn-brand" type="submit" name="acao" value="remarcar">Salvar novo horário</button>
+    </form>
+  </details>
+  <details class="detalhe-acao">
+    <summary>Cancelar ou recusar</summary>
+    <form method="post">
+      {% csrf_token %}
+      <div class="field">
+        <label class="field-label" for="motivo">Motivo (opcional, só a equipe vê)</label>
+        <textarea class="field-control" id="motivo" name="motivo" maxlength="200" rows="3"></textarea>
+      </div>
+      <button class="btn btn-danger-brand" type="submit" name="acao" value="cancelar">Confirmar cancelamento</button>
+    </form>
+  </details>
+</section>
+{% else %}
+<p class="vazio">Este atendimento está encerrado e não pode ser alterado.</p>
+{% endif %}
+{% endblock %}

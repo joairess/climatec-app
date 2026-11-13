@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Agendar atendimento | Climatec{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>Agende seu ar-condicionado</h1>
+  <p>Instalação, limpeza e manutenção em João Pessoa. Residências, empresas e condomínios.</p>
+  <p class="hero-nota">Não vendemos equipamentos — a gente instala e cuida do que você já tem.</p>
+  <a class="btn btn-light" href="#agendar">Pedir atendimento</a>
+</section>
+
+<section aria-labelledby="titulo-servicos">
+  <h2 id="titulo-servicos">Serviços</h2>
+  <div class="servicos">
+    {% for servico in servicos %}
+    <article class="servico">
+      <h3>{{ servico.titulo }}</h3>
+      <p>{{ servico.texto }}</p>
+    </article>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cartao" id="agendar" aria-labelledby="titulo-form">
+  <h2 id="titulo-form">Pedir atendimento</h2>
+  <p class="field-help">Campos com <span class="req" aria-hidden="true">*</span> são obrigatórios. A equipe confirma o horário depois do pedido.</p>
+  <form method="post" action="{% url 'home' %}#agendar" data-horarios="{% url 'horarios' %}" {% if form.errors %}aria-describedby="erros-form"{% endif %}>
+    {% csrf_token %}
+    {% if form.errors %}
+    <div class="banner danger" role="alert" id="erros-form" tabindex="-1">
+      <p><strong>Não foi possível enviar.</strong> Revise os campos destacados.</p>
+      {% for erro in form.non_field_errors %}<p>{{ erro }}</p>{% endfor %}
+    </div>
+    {% endif %}
+    {% include "includes/campo.html" with field=form.servico %}
+    {% include "includes/campo.html" with field=form.tipo_cliente %}
+    {% include "includes/campo.html" with field=form.nome %}
+    {% include "includes/campo.html" with field=form.telefone %}
+    {% include "includes/campo.html" with field=form.logradouro %}
+    {% include "includes/campo.html" with field=form.bairro %}
+    {% include "includes/campo.html" with field=form.cidade %}
+    {% include "includes/campo.html" with field=form.quantidade %}
+    {% include "includes/campo.html" with field=form.observacoes %}
+    {% include "includes/campo.html" with field=form.data %}
+    {% include "includes/horarios.html" with field=form.horario %}
+    <p class="privacidade">
+      Seus dados (nome, telefone e endereço) são usados só para agendar e realizar o atendimento, conforme a LGPD.
+      A página de acompanhamento mostra apenas o primeiro nome, o serviço, a data e a situação.
+      <a href="{% url 'privacidade' %}">Leia o aviso de privacidade</a>.
+    </p>
+    <div class="botoes">
+      <button class="btn btn-brand" type="submit" name="acao" value="agendar">Pedir atendimento</button>
+      <button class="btn btn-outline-brand" type="submit" name="acao" value="horarios" formnovalidate>Ver horários livres</button>
+    </div>
+    <noscript>
+      <p class="field-help">Sem JavaScript, escolha a data e use “Ver horários livres”.</p>
+    </noscript>
+  </form>
+</section>
+{% endblock %}

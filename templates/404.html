@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Página não encontrada | Climatec{% endblock %}
+
+{% block content %}
+<section class="cartao">
+  <h1>Página não encontrada</h1>
+  <p>Esse endereço não existe. Você pode agendar um atendimento ou acompanhar um código.</p>
+  <p><a class="btn btn-brand" href="{% url 'home' %}">Ir para o agendamento</a></p>
+</section>
+{% endblock %}
