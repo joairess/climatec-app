@@ -54,13 +54,15 @@ A suíte cobre o cadastro pelo telefone, a regra de horários livres (capacidade
 O arquivo `render.yaml` descreve um web service **free** em Python:
 
 - build: `pip install` e `collectstatic`
-- start: `migrate` e gunicorn escutando em `0.0.0.0:$PORT`
+- start: `migrate`, `ensure_initial_admin` e gunicorn escutando em `0.0.0.0:$PORT`
 - saúde: `GET /saude/` responde `{"status": "ok"}`
 - `SECRET_KEY` gerada pelo Blueprint, sem segredo no repositório
 
 No plano gratuito o disco é efêmero. O SQLite padrão serve para desenvolver, mas os dados somem quando o serviço dorme ou recebe um deploy novo. Para uso real, crie um Postgres no Render e coloque a connection string em `DATABASE_URL`. O projeto lê essa variável e usa SQLite quando ela está vazia.
 
-Depois do primeiro deploy, abra o shell do serviço e crie o acesso da equipe:
+Depois do primeiro deploy, crie o acesso da equipe. No painel do Render, aba **Environment**, defina `DJANGO_SUPERUSER_USERNAME` e `DJANGO_SUPERUSER_PASSWORD` (e, se quiser, `DJANGO_SUPERUSER_EMAIL`). A cada subida o serviço roda `python manage.py ensure_initial_admin` logo após o migrate: cria o superusuário só se ele ainda não existir, não troca a senha de quem já está cadastrado e não imprime a senha. Sem usuário ou senha, o comando termina sem erro e sem criar ninguém. Essas variáveis ficam só no painel — o plano gratuito não tem Shell, então não é preciso clonar o repositório.
+
+Com shell disponível, o caminho tradicional continua valendo:
 
 ```bash
 python manage.py createsuperuser
@@ -75,6 +77,6 @@ Nome, telefone e endereço são dados pessoais e só aparecem depois do login. A
 ## Estrutura
 
 - `config/` — settings, URLs e WSGI
-- `atendimento/` — modelos, grade de horários, telas e o comando `seed_demo`
+- `atendimento/` — modelos, grade de horários, telas e os comandos `seed_demo` e `ensure_initial_admin`
 - `templates/` — páginas em português
 - `static/` — logo, CSS e Bootstrap 5
