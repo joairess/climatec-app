@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Entrar | Climatec{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<section class="cartao" style="max-width: 28rem; margin-inline: auto;">
+  <h1>Área da equipe</h1>
+  <p>Agenda, clientes e horários da Climatec.</p>
+  {% if form.non_field_errors %}
+  <div class="banner danger" role="alert">
+    {% for erro in form.non_field_errors %}<p>{{ erro }}</p>{% endfor %}
+  </div>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    {% include "includes/campo.html" with field=form.username %}
+    {% include "includes/campo.html" with field=form.password %}
+    <button class="btn btn-brand" type="submit">Entrar</button>
+  </form>
+</section>
+{% endblock %}

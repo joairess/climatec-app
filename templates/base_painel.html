@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block site_header %}
+<header>
+  <div class="painel-top">
+    <div class="wrap painel-marca-linha">
+      <a class="painel-marca" href="{% url 'painel' %}">
+        <img src="{% static 'img/mark.png' %}" width="40" height="40" alt="">
+        <span>Climatec</span>
+      </a>
+      <p class="painel-cidade">Agenda · João Pessoa</p>
+    </div>
+  </div>
+  <nav class="painel-nav-bar" aria-label="Painel">
+    <div class="wrap painel-nav">
+      {% with nome=request.resolver_match.url_name %}
+      <a href="{% url 'painel' %}" {% if nome == "painel" %}aria-current="page"{% endif %}>Dia</a>
+      <a href="{% url 'painel_semana' %}" {% if nome == "painel_semana" %}aria-current="page"{% endif %}>Semana</a>
+      <a href="{% url 'pedido_novo' %}" {% if nome == "pedido_novo" %}aria-current="page"{% endif %}>Novo</a>
+      <a href="{% url 'clientes' %}" {% if nome == "clientes" or nome == "cliente_detalhe" %}aria-current="page"{% endif %}>Clientes</a>
+      <a href="{% url 'configuracao' %}" {% if nome == "configuracao" %}aria-current="page"{% endif %}>Horários</a>
+      {% endwith %}
+      <form method="post" action="{% url 'sair' %}">
+        {% csrf_token %}
+        <button type="submit" class="nav-btn">Sair</button>
+      </form>
+    </div>
+  </nav>
+</header>
+{% endblock %}

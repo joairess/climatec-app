@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Atendimento {{ atendimento.codigo }} | Climatec{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block content %}
+<article class="cartao status-card">
+  <p class="kicker">Acompanhamento</p>
+  <h1>Olá, {{ atendimento.cliente.primeiro_nome }}</h1>
+  <p class="codigo" id="codigo-acompanhamento">{{ atendimento.codigo }}</p>
+  <button type="button" class="btn btn-outline-brand" id="copiar-codigo" data-codigo="{{ atendimento.codigo }}">Copiar código</button>
+  <p class="status-linha">
+    <span class="badge-status status-{{ atendimento.status }}">{{ atendimento.get_status_display }}</span>
+  </p>
+  <p class="quando">
+    <time datetime="{{ atendimento.data|date:'Y-m-d' }}T{{ atendimento.horario|time:'H:i' }}">
+      {{ atendimento.data|date:"l, d/m/Y" }}
+      <span class="faixa">· {{ atendimento.horario|time:"H:i" }}–{{ fim|time:"H:i" }}</span>
+    </time>
+  </p>
+  <p>{{ atendimento.get_servico_display }}</p>
+  <p>{{ mensagem_status }}</p>
+  <p class="field-help">Guarde este código. O link abaixo mostra só estas informações, sem telefone nem endereço.</p>
+  <p><a href="{{ request.build_absolute_uri }}">{{ request.build_absolute_uri }}</a></p>
+  <a class="btn btn-whatsapp" href="{{ whatsapp_pedido }}">Falar no WhatsApp</a>
+  <p><a href="{% url 'acompanhar_busca' %}">Acompanhar outro código</a></p>
+</article>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "base_painel.html" %}
+
+{% block title %}Agenda de {{ dia|date:"d/m" }} | Climatec{% endblock %}
+
+{% block content %}
+<header class="painel-titulo">
+  <h1>{{ dia|date:"l, d/m/Y" }}{% if dia == hoje %} <span class="hoje">hoje</span>{% endif %}</h1>
+  <p>{{ itens|length }} atendimento{{ itens|length|pluralize:"s" }}{% if not aberto %} · dia fechado na grade{% endif %}</p>
+</header>
+<nav class="dia-nav" aria-label="Trocar de dia">
+  <a class="btn btn-outline-brand" href="{{ anterior }}" rel="prev">Anterior</a>
+  <a class="btn btn-outline-brand" href="{{ link_hoje }}">Hoje</a>
+  <a class="btn btn-outline-brand" href="{{ proximo }}" rel="next">Próximo</a>
+  <a class="btn btn-brand" href="{% url 'painel_semana' %}?data={{ dia|date:'Y-m-d' }}">Semana</a>
+</nav>
+{% include "painel/filtros.html" %}
+{% if itens %}
+<div class="lista">
+  {% for item in itens %}
+  <a class="pedido-card borda-{{ item.status }}" href="{% url 'pedido_detalhe' item.pk %}">
+    <div class="pedido-topo">
+      <time datetime="{{ item.horario|time:'H:i' }}">{{ item.horario|time:"H:i" }}–{{ item.fim|time:"H:i" }}</time>
+      <span class="badge-status status-{{ item.status }}">{{ item.get_status_display }}</span>
+    </div>
+    <p class="pedido-nome">{{ item.cliente.nome }}</p>
+    <p>{{ item.get_servico_display }} · {{ item.quantidade_aparelhos }} aparelho{{ item.quantidade_aparelhos|pluralize }}</p>
+    <p>{{ item.endereco.bairro }} · {{ item.endereco.get_tipo_display }}</p>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<p class="vazio">Nenhum atendimento neste dia.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+<fieldset class="field{% if field.errors %} field-invalid{% endif %}">
+  <legend>Horário <span class="req" aria-hidden="true">*</span></legend>
+  <p class="field-help" id="slots-msg" data-slots-msg aria-live="polite">{{ mensagem_horarios }}</p>
+  <div data-slots>
+    {{ field }}
+  </div>
+  {% if field.errors %}
+    <p class="field-error" id="erro-horario">{{ field.errors|striptags }}</p>
+  {% endif %}
+</fieldset>

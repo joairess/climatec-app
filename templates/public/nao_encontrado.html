@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Código não encontrado | Climatec{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block content %}
+<section class="cartao">
+  <h1>Não encontramos esse código</h1>
+  {% if codigo %}<p>O código <strong>{{ codigo }}</strong> não está na agenda.</p>{% endif %}
+  <p>Confira a digitação ou fale com a equipe.</p>
+  <p><a class="btn btn-whatsapp" href="{{ empresa_whatsapp_url }}">WhatsApp {{ empresa_whatsapp }}</a></p>
+  <p><a href="{% url 'acompanhar_busca' %}">Tentar outro código</a></p>
+</section>
+{% endblock %}

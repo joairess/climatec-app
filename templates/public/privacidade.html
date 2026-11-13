@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Privacidade | Climatec{% endblock %}
+
+{% block content %}
+<article class="cartao prosa">
+  <h1>Aviso de privacidade</h1>
+  <p>A Climatec Climatização e Engenharia Ltda., em João Pessoa/PB, é quem decide o uso dos dados deste agendamento.</p>
+  <h2>O que coletamos</h2>
+  <p>Nome, telefone, endereço do atendimento, quantidade de aparelhos e as observações que você escrever. Isso é dado pessoal.</p>
+  <h2>Para que serve</h2>
+  <p>Só para agendar, confirmar e executar o serviço pedido. A base é a execução do serviço que você solicitou, nos termos da LGPD.</p>
+  <h2>Quem vê</h2>
+  <p>Telefone e endereço aparecem apenas na área da equipe, com login. A página pública do código mostra o primeiro nome, o serviço, a data, o horário e a situação. Não vendemos nem compartilhamos esses dados.</p>
+  <h2>Por quanto tempo</h2>
+  <p>O histórico fica guardado para a continuidade do atendimento, como a próxima limpeza ou o contrato de manutenção. Você pode pedir correção ou exclusão pelo telefone ou WhatsApp.</p>
+  <p>
+    <a href="{{ empresa_telefone_uri }}">{{ empresa_telefone }}</a>
+    ·
+    <a href="{{ empresa_whatsapp_url }}">WhatsApp {{ empresa_whatsapp }}</a>
+  </p>
+</article>
+{% endblock %}

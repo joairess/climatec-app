@@ -1,0 +1,84 @@
+{% extends "base_painel.html" %}
+
+{% block title %}Horários | Climatec{% endblock %}
+
+{% block content %}
+<header class="painel-titulo">
+  <h1>Horários de atendimento</h1>
+  <p>A página pública só mostra horários dentro desta grade, respeitando a capacidade de cada faixa. Com capacidade 1, cada horário aceita um atendimento.</p>
+</header>
+{% if erros %}
+<div class="banner danger" role="alert">
+  {% for erro in erros %}<p>{{ erro }}</p>{% endfor %}
+</div>
+{% endif %}
+<form method="post" class="cartao">
+  {% csrf_token %}
+  <div class="field">
+    <label class="field-label" for="slot_minutos">Duração de cada horário</label>
+    <select class="field-control" id="slot_minutos" name="slot_minutos">
+      <option value="30" {% if config.slot_minutos == 30 %}selected{% endif %}>30 minutos</option>
+      <option value="60" {% if config.slot_minutos == 60 %}selected{% endif %}>60 minutos</option>
+      <option value="90" {% if config.slot_minutos == 90 %}selected{% endif %}>90 minutos</option>
+      <option value="120" {% if config.slot_minutos == 120 %}selected{% endif %}>120 minutos</option>
+      <option value="180" {% if config.slot_minutos == 180 %}selected{% endif %}>180 minutos</option>
+    </select>
+  </div>
+  <div class="field">
+    <label class="field-label" for="capacidade">Atendimentos por horário</label>
+    <input class="field-control" id="capacidade" name="capacidade" type="number" min="1" max="10" inputmode="numeric" value="{{ config.capacidade }}" required>
+  </div>
+  {% for dia in dias %}
+  <fieldset class="grade-dia">
+    <legend>{{ dia.nome }}</legend>
+    <label class="check">
+      <input type="checkbox" name="aberto_{{ dia.dia_semana }}" {% if dia.aberto %}checked{% endif %}>
+      <span>Aberto</span>
+    </label>
+    <div class="grade-horas">
+      <div class="field">
+        <label class="field-label" for="inicio_{{ dia.dia_semana }}">Início</label>
+        <input class="field-control" id="inicio_{{ dia.dia_semana }}" type="time" name="inicio_{{ dia.dia_semana }}" value="{{ dia.inicio|time:'H:i' }}" required>
+      </div>
+      <div class="field">
+        <label class="field-label" for="fim_{{ dia.dia_semana }}">Fim</label>
+        <input class="field-control" id="fim_{{ dia.dia_semana }}" type="time" name="fim_{{ dia.dia_semana }}" value="{{ dia.fim|time:'H:i' }}" required>
+      </div>
+    </div>
+  </fieldset>
+  {% endfor %}
+  <button class="btn btn-brand" type="submit">Salvar grade</button>
+</form>
+
+<section class="cartao">
+  <h2>Folgas</h2>
+  <p>Um dia de folga não aparece para o cliente, mesmo que caia numa data normalmente aberta.</p>
+  <form method="post" class="busca-linha">
+    {% csrf_token %}
+    <div class="field">
+      <label class="field-label" for="data_folga">Data</label>
+      <input class="field-control" id="data_folga" type="date" name="data_folga" required>
+    </div>
+    <div class="field">
+      <label class="field-label" for="motivo_folga">Motivo</label>
+      <input class="field-control" id="motivo_folga" name="motivo_folga" maxlength="120" placeholder="Feriado, folga…">
+    </div>
+    <button class="btn btn-outline-brand" type="submit" name="adicionar_folga" value="1">Adicionar folga</button>
+  </form>
+  {% if folgas %}
+  <ul class="folgas">
+    {% for folga in folgas %}
+    <li>
+      <span>{{ folga.data|date:"d/m/Y" }}{% if folga.motivo %} — {{ folga.motivo }}{% endif %}</span>
+      <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-danger-brand" type="submit" name="remover_folga" value="{{ folga.pk }}">Remover</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="vazio">Nenhuma folga marcada.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Climatec{% endblock %}</title>
+  <meta name="description" content="{% block description %}Agendamento de instalação, limpeza e manutenção de ar-condicionado em João Pessoa.{% endblock %}">
+  <meta name="theme-color" content="#0B3DAB">
+  {% block robots %}{% endblock %}
+  <link rel="icon" href="{% static 'img/mark.png' %}" type="image/png">
+  <link rel="stylesheet" href="{% static 'vendor/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
+  {% block site_header %}
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="logo-link" href="{% url 'home' %}">
+        <img class="logo" src="{% static 'img/logo.png' %}" width="1771" height="387" alt="Climatec Climatização e Engenharia Ltda.">
+      </a>
+      {% include "includes/contato.html" %}
+    </div>
+  </header>
+  {% endblock %}
+  <main id="conteudo" tabindex="-1">
+    <div class="wrap">
+      {% if messages %}
+      <ul class="mensagens">
+        {% for message in messages %}
+        <li class="banner {{ message.tags }}" role="status">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+  {% block footer %}
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="footer-nome">Climatec Climatização e Engenharia Ltda.</p>
+      <p>João Pessoa/PB · Instalação, limpeza e manutenção. Sem venda de equipamentos.</p>
+      <ul class="footer-links">
+        <li><a href="{% url 'home' %}">Agendar</a></li>
+        <li><a href="{% url 'acompanhar_busca' %}">Acompanhar pedido</a></li>
+        <li><a href="{% url 'privacidade' %}">Privacidade</a></li>
+        <li><a href="{% url 'entrar' %}">Área da equipe</a></li>
+      </ul>
+      <p>
+        <a href="{{ empresa_telefone_uri }}">{{ empresa_telefone }}</a>
+        ·
+        <a href="{{ empresa_whatsapp_url }}">WhatsApp {{ empresa_whatsapp }}</a>
+      </p>
+    </div>
+  </footer>
+  {% endblock %}
+  <script src="{% static 'js/horarios.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

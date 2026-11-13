@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Acompanhar pedido | Climatec{% endblock %}
+
+{% block content %}
+<section class="cartao">
+  <h1>Acompanhar pedido</h1>
+  <p>Digite o código recebido na confirmação. Ele tem o formato CLM-XXXXXX.</p>
+  {% if erro %}<p class="field-error" role="alert">{{ erro }}</p>{% endif %}
+  <form method="get" action="{% url 'acompanhar_busca' %}">
+    <div class="field">
+      <label class="field-label" for="codigo">Código</label>
+      <input class="field-control" id="codigo" name="codigo" value="{{ codigo }}" autocapitalize="characters" autocomplete="off" required>
+    </div>
+    <button class="btn btn-brand" type="submit">Ver situação</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,5 @@
+<nav class="filtros" aria-label="Filtrar por status">
+  {% for valor, rotulo in filtros %}
+  <a href="?data={{ dia|date:'Y-m-d' }}{% if valor %}&amp;status={{ valor }}{% endif %}" {% if status == valor %}aria-current="true"{% endif %}>{{ rotulo }}</a>
+  {% endfor %}
+</nav>
